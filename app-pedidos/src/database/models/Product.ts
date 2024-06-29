@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model, models, Document } from 'mongoose';
 
 export interface Producto {
     nombre: string;
@@ -14,4 +14,6 @@ const productoSchema = new Schema<ProductoDocument>({
     inventario: { type: Number, required: true },
 });
 
-export default model<ProductoDocument>('Producto', productoSchema);
+const Product = models.Product || model<ProductoDocument>('Product', productoSchema);
+
+export default Product;
