@@ -42,4 +42,4 @@ const pedidoSchema = new Schema<PedidoDocument>({
     observaciones: String,
 });
 
-export default model<PedidoDocument>('Pedido', pedidoSchema);
+export default model<PedidoDocument>('Order', pedidoSchema);
