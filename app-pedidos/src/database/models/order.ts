@@ -1,45 +1,112 @@
-import { Schema, model, Document } from 'mongoose';
+/*import { Schema, model, models, Document, Types } from 'mongoose';
 
-export interface ProductoPedido {
-    productoId: string;
-    nombre: string;
-    cantidad: number;
-}
 
 export interface Pedido {
     fecha: Date;
     estado: 'pendiente' | 'en ruta' | 'entregado' | 'cancelado';
     pagado: boolean;
-    clienteNombre: string;
-    clienteCelular: string;
-    clienteCorreo: string;
-    clienteDireccion: string;
-    clienteCiudad: string;
-    productos: ProductoPedido[];
+    cliente: Types.ObjectId;
+    productos: Types.ObjectId[];
     metodoEnvio: 'domicilio' | 'recoge en punto';
     observaciones?: string;
 }
 
 export interface PedidoDocument extends Pedido, Document {}
 
-const productoPedidoSchema = new Schema({
-    productoId: { type: Schema.Types.ObjectId, ref: 'Producto' },
-    nombre: String,
-    cantidad: Number,
+const pedidoSchema = new Schema<PedidoDocument>({
+    fecha: { type: Date, default: Date.now, required: true },
+    estado: { 
+        type: String, 
+        enum: ['pendiente', 'en ruta', 'entregado', 'cancelado'], 
+        default: 'pendiente', 
+        required: true 
+    },
+    pagado: { type: Boolean, default: false, required: true },
+    cliente: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    productos: [{ type: Schema.Types.ObjectId, ref: 'Product', required: true }],
+    metodoEnvio: { 
+        type: String, 
+        enum: ['domicilio', 'recoge en punto'], 
+        required: true 
+    },
+    observaciones: { type: String }
+}, {
+    timestamps: true
 });
+
+// Índices para mejorar el rendimiento de las consultas
+pedidoSchema.index({ fecha: 1 });
+pedidoSchema.index({ estado: 1 });
+pedidoSchema.index({ cliente: 1 });
+pedidoSchema.index({ pagado: 1 });
+
+// Método estático para paginación y filtrado
+pedidoSchema.statics.getPaginatedPedidos = async function(
+    page: number = 1,
+    limit: number = 10,
+    filters: any = {}
+) {
+    const skip = (page - 1) * limit;
+
+    const pedidos = await this.find(filters)
+        .skip(skip)
+        .limit(limit)
+        .populate('cliente', 'nombre celular correo direccion ciudad')
+        .populate('productos', 'nombre valor');
+
+    const total = await this.countDocuments(filters);
+
+    return {
+        pedidos,
+        total,
+        page,
+        totalPages: Math.ceil(total / limit)
+    };
+};
+
+const Order = models.Order || model<PedidoDocument>('Order', pedidoSchema);
+
+export default Order; 
+
+*/
+
+import { Schema, model, models, Document, Types } from 'mongoose';
+import { UsuarioDocument } from './User';
+import { ProductoDocument } from './Product'
+
+export interface Pedido {
+    fecha: Date;
+    estado: 'pendiente' | 'en ruta' | 'entregado' | 'cancelado';
+    pagado: boolean;
+    cliente: Types.ObjectId | UsuarioDocument;
+    productos: (Types.ObjectId | ProductoDocument)[];
+    metodoEnvio: 'domicilio' | 'recoge en punto';
+    observaciones?: string;
+}
+
+export interface PedidoDocument extends Pedido, Document {}
 
 const pedidoSchema = new Schema<PedidoDocument>({
-    fecha: { type: Date, default: Date.now },
-    estado: { type: String, enum: ['pendiente', 'en ruta', 'entregado', 'cancelado'], default: 'pendiente' },
-    pagado: { type: Boolean, default: false },
-    clienteNombre: { type: String, required: true },
-    clienteCelular: { type: String, required: true },
-    clienteCorreo: { type: String, required: true },
-    clienteDireccion: { type: String, required: true },
-    clienteCiudad: { type: String, required: true },
-    productos: [productoPedidoSchema],
-    metodoEnvio: { type: String, enum: ['domicilio', 'recoge en punto'], default: 'domicilio' },
-    observaciones: String,
+    fecha: { type: Date, default: Date.now, required: true },
+    estado: { 
+        type: String, 
+        enum: ['pendiente', 'en ruta', 'entregado', 'cancelado'], 
+        default: 'pendiente', 
+        required: true 
+    },
+    pagado: { type: Boolean, default: false, required: true },
+    cliente: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    productos: [{ type: Schema.Types.ObjectId, ref: 'Product', required: true }],
+    metodoEnvio: { 
+        type: String, 
+        enum: ['domicilio', 'recoge en punto'], 
+        required: true 
+    },
+    observaciones: { type: String }
+}, {
+    timestamps: true
 });
 
-export default model<PedidoDocument>('Order', pedidoSchema);
+const Order = models.Order || model<PedidoDocument>('Order', pedidoSchema);
+
+export default Order;
