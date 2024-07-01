@@ -1,39 +1,68 @@
-import React from 'react';
-import { Bars3Icon,  } from '@heroicons/react/24/outline'; // Importa los íconos de Heroicons
+"use client"
 
-const cliente = {
-    correo: "ccxzxz@gmail.com",
-    celular: "3123123123",
-    direccion: "Calle 123",
-    ciudad: "Bogotá",
-}
-function detailsUser() {
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import { getUser } from '@/lib/apiclientUser';
+import { IUser } from '@/interfaces/User';
+import { UserIcon, PhoneIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import EditUserForm from '../_components/formedituser';
+
+
+function UserDetailAndEdit () {
+  const params = useParams();
+  const userId = params.id as string;
+  const [client, setClient] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (userId) {
+        const data = await getUser(userId);
+        setClient(data);
+      }
+    };
+
+    fetchUser();
+  }, [userId]);
+  if (!client) return <p>Cargando...</p>;
+
   return (
     <div className="container mx-auto py-8">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Detalles del Cliente</h1>
-        <div className="flex">
-          <Bars3Icon className="h-6 w-6 text-gray-600 mr-2 cursor-pointer" />
-            <Bars3Icon className="h-6 w-6 text-gray-600 cursor-pointer" />
+      <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Detalles del Cliente</h1>
+      <div className="flex gap-8">
+        <div className="w-1/2 pr-4">
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <h2 className="text-xl font-semibold text-gray-700 mb-6">Información del Cliente</h2>
+            <div className="space-y-4">
+              <div className="flex items-center">
+                <UserIcon className="h-6 w-6 text-blue-500 mr-3" />
+                <p className="text-lg text-gray-600">{client.nombre}</p>
+              </div>
+              <div className="flex items-center">
+                <UserIcon className="h-6 w-6 text-blue-500 mr-3" />
+                <p className="text-lg text-gray-600">{client.correo}</p>
+              </div>
+              <div className="flex items-center">
+                <PhoneIcon className="h-6 w-6 text-green-500 mr-3" />
+                <p className="text-lg text-gray-600">{client.celular}</p>
+              </div>
+              <div className="flex items-center">
+                <MapPinIcon className="h-6 w-6 text-red-500 mr-3" />
+                <p className="text-lg text-gray-600">{client.direccion}, {client.ciudad}</p>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="bg-white p-6 rounded shadow-md">
-        <div className="flex items-center mb-4">
-          <Bars3Icon className="h-6 w-6 text-gray-500 mr-2" />
-          <p className="text-lg font-semibold">{cliente.correo}</p>
-        </div>
-        <div className="flex items-center mb-4">
-          <Bars3Icon className="h-6 w-6 text-gray-500 mr-2" />
-          <p className="text-lg font-semibold">{cliente.celular}</p>
-        </div>
-        <div className="flex items-center mb-4">
-          <Bars3Icon className="h-6 w-6 text-gray-500 mr-2" />
-          <p className="text-lg font-semibold">{cliente.direccion}, {cliente.ciudad}</p>
+        <div className="w-1/2 pl-4">
+          <EditUserForm
+            userId={userId}
+            initialData={client}
+            onUpdateSuccess={(updatedUser) => setClient(updatedUser)}
+          />
         </div>
       </div>
     </div>
   );
+
 };
 
-export default detailsUser;
-
+export default UserDetailAndEdit;

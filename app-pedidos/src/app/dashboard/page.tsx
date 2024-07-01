@@ -3,7 +3,10 @@
 import Summary from '@/components/sumery';
 
 
-export default function Dashboard() {
+
+  function Dashboard() {
+
+ 
   return (
     <div className="relative px-6 pt-14 lg:px-8">
       <div
@@ -36,3 +39,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+export default Dashboard;
