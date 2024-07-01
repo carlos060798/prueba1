@@ -6,6 +6,7 @@ import { getUser } from '@/lib/apiclientUser';
 import { IUser } from '@/interfaces/User';
 import { UserIcon, PhoneIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import EditUserForm from '../_components/formedituser';
+import Loading from '@/components/loading';
 
 
 function UserDetailAndEdit () {
@@ -23,7 +24,7 @@ function UserDetailAndEdit () {
 
     fetchUser();
   }, [userId]);
-  if (!client) return <p>Cargando...</p>;
+  if (!client) return <Loading />;
 
   return (
     <div className="container mx-auto py-8">
