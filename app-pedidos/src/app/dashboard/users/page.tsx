@@ -1,14 +1,11 @@
 "use client"
-
 import React from 'react';
 import ListClient from "./_components/listUsers";
 import NewUserForm from './_components/formcreateuser';
 import useUser from '@/app/hooks/useUser';
 
-
 function UsersList() {
-    const { users, openModal, closeModal, isModalOpen } = useUser();
-   
+    const { users, openModal, closeModal, isModalOpen, handleCreateUser, handleDeleteUser } = useUser();
 
     return (
         <div className="container mx-auto py-8">
@@ -21,13 +18,12 @@ function UsersList() {
                     Crear Nuevo Usuario
                 </button>
             </div>
-            <ListClient clients={users} />
+            <ListClient clients={users} handleDeleteUser={handleDeleteUser} />
             {isModalOpen && (
-                <NewUserForm closeModal={closeModal} />
+                <NewUserForm closeModal={closeModal} handleCreateUser={handleCreateUser} />
             )}
         </div>
     );
 }
 
 export default UsersList;
-  

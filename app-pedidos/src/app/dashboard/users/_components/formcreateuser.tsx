@@ -1,13 +1,12 @@
-import { createUser } from "@/lib/apiclientUser";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 interface NewUserFormProps {
   closeModal: () => void;
+  handleCreateUser: (userData: any) => void;
 }
 
 type FormData = {
- 
   nombre: string;
   correo: string;
   celular: string;
@@ -15,7 +14,7 @@ type FormData = {
   ciudad: string;
 };
 
-function NewUserForm ({ closeModal }: NewUserFormProps) {
+function NewUserForm ({ closeModal, handleCreateUser }: NewUserFormProps) {
   const {
     register,
     handleSubmit,
@@ -24,11 +23,10 @@ function NewUserForm ({ closeModal }: NewUserFormProps) {
   } = useForm<FormData>();
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    console.log(data);
-    await createUser(data);
+    await handleCreateUser(data); // Llama a la función handleCreateUser con los datos del nuevo usuario
 
-    reset();
-    closeModal();
+    reset(); // Reinicia el formulario después de crear un usuario
+    closeModal(); // Cierra el modal después de crear un usuario
   };
 
   return (
@@ -115,14 +113,20 @@ function NewUserForm ({ closeModal }: NewUserFormProps) {
             <input
               type="text"
               id="celular"
-              {...register("celular", { required: true })}
+              {...register("celular", {
+                required: true,
+                pattern: {
+                  value: /^[0-9]{10}$/,
+                  message: "Ingrese un número de celular válido",
+                },
+              })}
               className={`w-full px-3 py-2 border ${
                 errors.celular ? "border-red-500" : "border-gray-300"
               } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
             />
             {errors.celular && (
               <p className="text-red-500 text-xs italic">
-                Celular es requerido.
+                {errors.celular.message}
               </p>
             )}
           </div>
@@ -131,7 +135,7 @@ function NewUserForm ({ closeModal }: NewUserFormProps) {
               htmlFor="direccion"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Dirección
+              Direccion
             </label>
             <input
               type="text"
@@ -143,7 +147,7 @@ function NewUserForm ({ closeModal }: NewUserFormProps) {
             />
             {errors.direccion && (
               <p className="text-red-500 text-xs italic">
-                Dirección es requerida.
+                Direccion es requerida.
               </p>
             )}
           </div>
@@ -168,25 +172,16 @@ function NewUserForm ({ closeModal }: NewUserFormProps) {
               </p>
             )}
           </div>
-          <div className="flex justify-end space-x-3 mt-6">
-            <button
-              type="button"
-              onClick={closeModal}
-              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Guardar
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md transition duration-150 ease-in-out"
+          >
+            Crear Usuario
+          </button>
         </form>
       </div>
     </div>
   );
-};
+}
 
 export default NewUserForm;
