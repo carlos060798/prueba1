@@ -1,21 +1,10 @@
 import { NextResponse, NextRequest } from "next/server";
 import connectBd from "@/database/conecction";
 import Product from "@/database/models/Product";
-import { Producto } from '../../../database/models/Product';
 
-// Obtener todos los usuarios
-export async function GET() {
-    try {
-        await connectBd();
-        const products= await Product.find();
-        return NextResponse.json(products);
-    } catch (error: any) {
-        console.error("Error al obtener los Productos:", error);
-        return NextResponse.json({ message: "Error al obtener Productos" }, { status: 500 });
-    }
-}
 
-// Crear un nuevo usuario
+
+// Crear un nuevo producto
 export async function POST(req: NextRequest) {
     try {
         const data = await req.json();

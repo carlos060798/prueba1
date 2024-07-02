@@ -53,3 +53,14 @@ export async function updateproduct(id: string, product: Iproduct) {
         return err.message;
     }
 }
+
+
+export async function getproductsByPage(page: number) {
+    try {
+        const response = await axios.get(`${URLAPI}/product/page/${page}`);
+        return response.data;
+    } catch (error) {
+        const err = error as AxiosError;
+        return err.message;
+    }
+}

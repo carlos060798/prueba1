@@ -1,7 +1,6 @@
  "use  client"
 
-
-import useUser from '@/app/hooks/useUser';
+import Loading from '@/components/loading';
 import { IUser } from "@/interfaces/User";
 import Link from "next/link";
 
@@ -12,7 +11,7 @@ interface ListClientProps {
 
 export default function ListClient({ clients, handleDeleteUser }: ListClientProps) {
   if (!Array.isArray(clients) || clients.length === 0) {
-    return <p>No hay usuarios disponibles.</p>;
+    return <Loading/>
   }
 
   return (
@@ -33,7 +32,7 @@ export default function ListClient({ clients, handleDeleteUser }: ListClientProp
              info
             </Link>
             <button className="px-4 py-2 text-sm font-medium bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-             onClick={() => handleDeleteUser(client._id)} // Llama a la función handleDeleteUser con el ID del usuario
+             onClick={() => handleDeleteUser(client._id as string)} // Llama a la función handleDeleteUser con el ID del usuario
             >
               Eliminar
             </button>
