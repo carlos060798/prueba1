@@ -4,7 +4,7 @@ import Product from "@/database/models/Product";
 
 // Obtener todos los usuarios
 
-export async function GET(request: Request , { params }: { params: { page: string } }) {
+export async function GET(request: Request, { params }: { params: { page: string } }) {
     try {
         await connectBd(); // Conecta a la base de datos
 

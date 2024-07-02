@@ -77,3 +77,32 @@ export async function DELETE(req: NextRequest , { params }: { params: { id: stri
         return NextResponse.json({ message: "Error al eliminar pedido" }, { status: 500 });
     }
 }
+
+
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+    await connectBd();
+
+    try {
+        const id = params.id;
+        const { estado } = await req.json();
+
+        if (!id) {
+            return NextResponse.json({ message: "ID de pedido no proporcionado" }, { status: 400 });
+        }
+
+        if (!estado) {
+            return NextResponse.json({ message: "Estado de pedido no proporcionado" }, { status: 400 });
+        }
+
+        const updatedOrder = await Order.findByIdAndUpdate(id, { estado }, { new: true });
+
+        if (!updatedOrder) {
+            return NextResponse.json({ message: "Pedido no encontrado" }, { status: 404 });
+        }
+
+        return NextResponse.json({ message: "Estado de pedido actualizado", pedido: updatedOrder });
+    } catch (error: any) {
+        console.error("Error al actualizar estado del pedido:", error);
+        return NextResponse.json({ message: "Error al actualizar estado del pedido" }, { status: 500 });
+    }
+}
