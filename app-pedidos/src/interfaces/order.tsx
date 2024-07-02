@@ -7,4 +7,30 @@ export interface IOrder {
     productos: string[];
     metodoEnvio: 'domicilio' | 'recoge en punto';
     observaciones?: string;
-}
+} 
+
+export  interface  IOrderdetails {
+    _id: string;
+    estado: string;
+    pagado: boolean;
+    cliente: {
+      _id: string;
+      nombre: string;
+      correo: string;
+      celular: string;
+      direccion: string;
+      ciudad: string;
+    };
+    productos: {
+      _id: string;
+      nombre: string;
+      valor: number;
+      inventario: number;
+    }[];
+    metodoEnvio: string;
+    observaciones: string;
+    fecha: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  }

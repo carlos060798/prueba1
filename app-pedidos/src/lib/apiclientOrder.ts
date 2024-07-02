@@ -68,4 +68,4 @@ export  async function changeestado(id: string, estado: string) {
         const  err= error as AxiosError;
        return err.message
     }
-}
+} 

@@ -4,6 +4,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { deleteorder, getorderByPage } from "@/lib/apiclientOrder";
 import { IOrder } from "../../../interfaces/order";
 import Loading from "@/components/loading";
+import Link from "next/link";
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -48,9 +49,10 @@ export default function Orders() {
                 <td className="py-3 px-6">{order.estado}</td>
                 <td className="py-3 px-6">{order.observaciones || "N/A"}</td>
                 <td className="py-2 px-4 border-b flex space-x-2">
-                  <button className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                  <Link  href={`/dashboard/orders/${order._id}`} 
+                  className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700">
                     Info
-                  </button>
+                  </Link>
                   <button
                     className="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700"
                     onClick={() => handleDelete(order._id as string)}
