@@ -21,7 +21,7 @@ const OrderDetails = () => {
     
       setOrder(data);
       setLoading(false);
-    } catch (error) {
+    } catch (error:unknown) {
       setError(error.message);
       setLoading(false);
     }
